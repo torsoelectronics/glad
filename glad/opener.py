@@ -2,6 +2,7 @@ from contextlib import closing
 import logging
 import sys
 import certifi
+import urllib
 
 if sys.version_info >= (3, 0):
     _is_py3 = True
@@ -81,7 +82,7 @@ class URLOpener(object):
         logger.info('opening: \'%s\'', url)
 
         if data is None:
-            return self.opener.open(url)
+            return urllib.request.urlopen(url)
 
         return self.opener.open(url, data)
 
