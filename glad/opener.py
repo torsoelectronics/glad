@@ -1,6 +1,7 @@
 from contextlib import closing
 import logging
 import sys
+import certifi
 
 if sys.version_info >= (3, 0):
     _is_py3 = True
