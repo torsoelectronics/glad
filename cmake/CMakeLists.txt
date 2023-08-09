@@ -239,7 +239,7 @@ function(glad_add_library TARGET)
         COMMAND ${CMAKE_COMMAND} -E remove_directory ${GLAD_DIR}
         COMMAND ${CMAKE_COMMAND} -E make_directory   ${GLAD_DIR}
         COMMAND echo Generating with args ${GLAD_ARGS}
-        COMMAND ${PYTHON3_EXECUTABLE} -m glad ${GLAD_ARGS}
+        COMMAND ${Python3_EXECUTABLE} -m glad ${GLAD_ARGS}
         COMMAND echo Writing ${GLAD_ARGS_PATH}
         COMMAND echo ${GLAD_ARGS} > ${GLAD_ARGS_PATH}
         WORKING_DIRECTORY ${GLAD_SOURCES_DIR}
