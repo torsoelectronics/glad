@@ -38,10 +38,10 @@
 #   ```
 # - create  a static glad library with the vulkan=1.1
 
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required(VERSION 3.18)
 project(glad C)
 
-find_package(PythonInterp REQUIRED)
+find_package(Python3 COMPONENTS Interpreter Development)
 
 set(GLAD_CMAKE_DIR "${CMAKE_CURRENT_LIST_DIR}" CACHE STRING "Directory containing glad generator CMakeLists.txt")
 set(GLAD_SOURCES_DIR "${GLAD_CMAKE_DIR}/../"   CACHE STRING "Directory containing glad sources (python modules), used as working directory")
@@ -176,9 +176,9 @@ endfunction()
 # Create a glad library named "${TARGET}"
 function(glad_add_library TARGET)
     message(STATUS "Glad Library \'${TARGET}\'")
-    
+
     cmake_parse_arguments(GG "MERGE;QUIET;REPRODUCIBLE;STATIC;SHARED;MODULE;INTERFACE;EXCLUDE_FROM_ALL" "LOCATION;LANGUAGE" "API;EXTENSIONS" ${ARGN})
-    
+
     if(NOT GG_LOCATION)
         set(GG_LOCATION "${CMAKE_CURRENT_BINARY_DIR}/gladsources/${TARGET}")
     endif()
@@ -275,7 +275,7 @@ function(glad_add_library TARGET)
         PUBLIC
             ${CMAKE_DL_LIBS}
         )
-        
+
     if(GG_SHARED)
         target_compile_definitions("${TARGET}" PUBLIC GLAD_API_CALL_EXPORT)
         set_target_properties("${TARGET}"
