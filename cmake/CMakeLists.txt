@@ -41,7 +41,7 @@
 cmake_minimum_required(VERSION 3.18)
 project(glad C)
 
-find_package(Python3 COMPONENTS Interpreter Development)
+find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
 
 set(GLAD_CMAKE_DIR "${CMAKE_CURRENT_LIST_DIR}" CACHE STRING "Directory containing glad generator CMakeLists.txt")
 set(GLAD_SOURCES_DIR "${GLAD_CMAKE_DIR}/../"   CACHE STRING "Directory containing glad sources (python modules), used as working directory")
@@ -232,6 +232,11 @@ function(glad_add_library TARGET)
     string(REPLACE "${GLAD_DIR}" GLAD_DIRECTORY GLAD_ARGS_UNIVERSAL "${GLAD_ARGS}")
     set(GLAD_ARGS_PATH "${GLAD_DIR}/args.txt")
 
+	# Check if ${Python3_EXECUTABLE} is defined
+	if(NOT Python3_EXECUTABLE)
+		message(FATAL_ERROR "Python3_EXECUTABLE is not defined")
+	endif()
+
     # add make custom target
     add_custom_command(
         OUTPUT ${GLAD_FILES} ${GLAD_ARGS_PATH}
@@ -239,7 +244,7 @@ function(glad_add_library TARGET)
         COMMAND ${CMAKE_COMMAND} -E remove_directory ${GLAD_DIR}
         COMMAND ${CMAKE_COMMAND} -E make_directory   ${GLAD_DIR}
         COMMAND echo Generating with args ${GLAD_ARGS}
-        COMMAND ${Python3_EXECUTABLE} -m glad ${GLAD_ARGS}
+        COMMAND ${Python_EXECUTABLE} -m glad ${GLAD_ARGS}
         COMMAND echo Writing ${GLAD_ARGS_PATH}
         COMMAND echo ${GLAD_ARGS} > ${GLAD_ARGS_PATH}
         WORKING_DIRECTORY ${GLAD_SOURCES_DIR}
