@@ -3,7 +3,6 @@ import logging
 import sys
 import certifi
 import urllib
-import urllib.request
 import ssl
 
 if sys.version_info >= (3, 0):
@@ -84,7 +83,10 @@ class URLOpener(object):
         logger.info('opening: \'%s\'', url)
 
         if data is None:
-            return urllib.request.urlopen(url, context=ssl.create_default_context(cafile=certifi.where()))
+            if _is_py3:
+                return urllib.request.urlopen(url, context=ssl.create_default_context(cafile=certifi.where()))
+            else:
+                return self.opener.open(url)
 
         return self.opener.open(url, data)
 
