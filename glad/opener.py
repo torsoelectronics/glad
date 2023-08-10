@@ -3,6 +3,7 @@ import logging
 import sys
 import certifi
 import urllib
+import urllib.request
 import ssl
 
 if sys.version_info >= (3, 0):
