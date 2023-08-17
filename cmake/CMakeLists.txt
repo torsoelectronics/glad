@@ -38,10 +38,8 @@
 #   ```
 # - create  a static glad library with the vulkan=1.1
 
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required(VERSION 3.18)
 project(glad C)
-
-find_package(PythonInterp REQUIRED)
 
 set(GLAD_CMAKE_DIR "${CMAKE_CURRENT_LIST_DIR}" CACHE STRING "Directory containing glad generator CMakeLists.txt")
 set(GLAD_SOURCES_DIR "${GLAD_CMAKE_DIR}/../"   CACHE STRING "Directory containing glad sources (python modules), used as working directory")
@@ -176,9 +174,9 @@ endfunction()
 # Create a glad library named "${TARGET}"
 function(glad_add_library TARGET)
     message(STATUS "Glad Library \'${TARGET}\'")
-    
+
     cmake_parse_arguments(GG "MERGE;QUIET;REPRODUCIBLE;STATIC;SHARED;MODULE;INTERFACE;EXCLUDE_FROM_ALL" "LOCATION;LANGUAGE" "API;EXTENSIONS" ${ARGN})
-    
+
     if(NOT GG_LOCATION)
         set(GG_LOCATION "${CMAKE_CURRENT_BINARY_DIR}/gladsources/${TARGET}")
     endif()
@@ -232,6 +230,12 @@ function(glad_add_library TARGET)
     string(REPLACE "${GLAD_DIR}" GLAD_DIRECTORY GLAD_ARGS_UNIVERSAL "${GLAD_ARGS}")
     set(GLAD_ARGS_PATH "${GLAD_DIR}/args.txt")
 
+    # Make sure the correct python version is used
+    find_package(Python3 COMPONENTS Interpreter REQUIRED)
+
+    # Print python executable path
+    message(STATUS "glad python executable: ${Python3_EXECUTABLE}")
+
     # add make custom target
     add_custom_command(
         OUTPUT ${GLAD_FILES} ${GLAD_ARGS_PATH}
@@ -239,7 +243,7 @@ function(glad_add_library TARGET)
         COMMAND ${CMAKE_COMMAND} -E remove_directory ${GLAD_DIR}
         COMMAND ${CMAKE_COMMAND} -E make_directory   ${GLAD_DIR}
         COMMAND echo Generating with args ${GLAD_ARGS}
-        COMMAND ${PYTHON_EXECUTABLE} -m glad ${GLAD_ARGS}
+        COMMAND ${Python3_EXECUTABLE} -m glad ${GLAD_ARGS}
         COMMAND echo Writing ${GLAD_ARGS_PATH}
         COMMAND echo ${GLAD_ARGS} > ${GLAD_ARGS_PATH}
         WORKING_DIRECTORY ${GLAD_SOURCES_DIR}
@@ -275,7 +279,7 @@ function(glad_add_library TARGET)
         PUBLIC
             ${CMAKE_DL_LIBS}
         )
-        
+
     if(GG_SHARED)
         target_compile_definitions("${TARGET}" PUBLIC GLAD_API_CALL_EXPORT)
         set_target_properties("${TARGET}"
