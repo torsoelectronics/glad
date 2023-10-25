@@ -41,6 +41,11 @@
 cmake_minimum_required(VERSION 3.18)
 project(glad C)
 
+find_package(
+  Python 3.11
+  COMPONENTS Interpreter Development
+  REQUIRED)
+
 set(GLAD_CMAKE_DIR "${CMAKE_CURRENT_LIST_DIR}" CACHE STRING "Directory containing glad generator CMakeLists.txt")
 set(GLAD_SOURCES_DIR "${GLAD_CMAKE_DIR}/../"   CACHE STRING "Directory containing glad sources (python modules), used as working directory")
 mark_as_advanced(GLAD_CMAKE_DIR)
